@@ -5,20 +5,7 @@
   const estado = reactive({
     respostaTemp: (''),
     filtro: 'adicao',
-    resultado: [
-      {
-        solucao: '3 + 3 = 6'
-      },
-      {
-        solucao: '3 - 3 = 0'
-      },
-      {
-        solucao: '3 x 3 = 9'
-      },
-      {
-        solucao: '3 ÷ 3 = 1'
-      }
-    ]
+    resultado: []
   })
   
   const valorA = ref('');
@@ -34,11 +21,19 @@
   };
   
   const multiplicacao = () => {
+    if (Number(valorA.value) === 0 || Number(valorB.value) === 0 ) {
+      estado.respostaTemp = 0;
+    } else {
     estado.respostaTemp = Number(valorA.value) * Number(valorB.value);
+    }
   };
   
   const divisao = () => {
+    if (Number(valorA.value) === 0 || Number(valorB.value) === 0 ) {
+      estado.respostaTemp = 'não é possivel dividir por 0';
+    } else {
     estado.respostaTemp = Number(valorA.value) / Number(valorB.value);
+    }
   };
   
   const getOperacao = () => {
@@ -64,7 +59,8 @@
   }
   
   const sincroniza = () => {
-    if (valorA.value.length !== '' && valorB.value.length !== '' ) {
+    if (valorA.value.length !== '' && valorB.value.length !== '' && typeof valorA.value === 'number' && typeof valorB.value === 'number' ) {//atenção na validação.
+
       getOperacao();
       introResposta();
     }
@@ -83,26 +79,26 @@
       <form class="mt-4">
         <div class="row">
           <div class="col-4">
-            <input v-model="valorA" @input="sincroniza()"  class="form-control"
+            <input v-model="valorA" @input="sincroniza"  class="text-center form-control"
               type="number" placeholder="digite um numero">
           </div>
           <div class="col-4">
-            <input v-model="valorB" @input="sincroniza()"  class="form-control"
+            <input v-model="valorB" @input="sincroniza"  class="text-center form-control"
               type="number" placeholder="digite um numero">
           </div>
           <div class="col-4">
-            <select @change="evento => onChange(evento) " class=" form-control"  >
-              <option value="adicao">adição</option>
-              <option value="subtracao">subtração</option>
-              <option value="multiplicacao">multiplicação</option>
-              <option value="divisao">divisão</option>
+            <select  @change=" evento => { estado.filtro = evento.target.value; sincroniza(); }" class=" form-control"  >
+              <option class="text-center" value="adicao">adição</option>
+              <option class="text-center" value="subtracao">subtração</option>
+              <option class="text-center" value="multiplicacao">multiplicação</option>
+              <option class="text-center" value="divisao">divisão</option>
             </select>
           </div>
         </div>
       </form>
       <ul class="list-group mt-3" v-for="resultante in estado.resultado">
         <li class="list-group-item">
-          <label for="">{{ resultante.solucao }}</label>
+          <label >{{ resultante.solucao }}</label>
         </li>
       </ul>
     </div>
